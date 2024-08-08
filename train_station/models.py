@@ -81,6 +81,21 @@ class Ticket(models.Model):
     class Meta:
         unique_together = (("cargo", "journey", "seat"),)
 
+    def clean(self):
+        super().clean()
+        if not (1 <= self.seat <= self.journey.train.places_in_cargo):
+            raise ValidationError(
+                f"Seat must be between 1 and {self.journey.train.places_in_cargo}."
+            )
+        if not (1 <= self.cargo <= self.journey.train.cargo_num):
+            raise ValidationError(
+                f"Cargo must be between 1 and {self.journey.train.cargo_num}."
+            )
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.journey} (train - {self.cargo}, seat - {self.seat})"
 
