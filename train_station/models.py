@@ -53,6 +53,9 @@ class Route(models.Model):
     )
     distance = models.IntegerField()
 
+    class Meta:
+        unique_together = (("source", "destination"),)
+
     def __str__(self):
         return f"{self.source.name} - {self.destination.name}"
 
