@@ -1,3 +1,6 @@
+import datetime
+
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
@@ -25,7 +28,7 @@ class Train(models.Model):
 
 
 class Station(models.Model):
-    name = models.CharField()
+    name = models.CharField(max_length=255)
     latitude = models.DecimalField(
         max_digits=5,
         decimal_places=2,
@@ -42,9 +45,11 @@ class Station(models.Model):
 
 
 class Route(models.Model):
-    source = models.ForeignKey(Station, on_delete=models.CASCADE, related_name="routes")
+    source = models.ForeignKey(
+        Station, on_delete=models.CASCADE, related_name="routes_as_source"
+    )
     destination = models.ForeignKey(
-        Station, on_delete=models.CASCADE, related_name="routes"
+        Station, on_delete=models.CASCADE, related_name="routes_as_destination"
     )
     distance = models.IntegerField()
 
@@ -62,13 +67,15 @@ class Crew(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
 
 class Ticket(models.Model):
     cargo = models.IntegerField()
     seat = models.IntegerField()
-    journey = models.ForeignKey("Journey", on_delete=models.CASCADE, related_name="tickets")
+    journey = models.ForeignKey(
+        "Journey", on_delete=models.CASCADE, related_name="tickets"
+    )
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -78,8 +85,11 @@ class Ticket(models.Model):
 class Journey(models.Model):
     route = models.ForeignKey(Route, on_delete=models.CASCADE, related_name="journeys")
     train = models.ForeignKey(Train, on_delete=models.CASCADE, related_name="journeys")
-    departure_time = models.DateTimeField()
+    departure_time = models.DateTimeField(
+        validators=[MinValueValidator(datetime.datetime.now())],
+    )
     arrival_time = models.DateTimeField()
+    crew = models.ManyToManyField(Crew, related_name="journeys")
 
     def clean(self):
         super().clean()
