@@ -78,6 +78,9 @@ class Ticket(models.Model):
     )
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
+    class Meta:
+        unique_together = (("cargo", "journey", "seat"),)
+
     def __str__(self):
         return f"{self.journey} (train - {self.cargo}, seat - {self.seat})"
 
