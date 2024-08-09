@@ -24,7 +24,7 @@ class Train(models.Model):
     )
 
     def __str__(self):
-        return f"{self.name} (№{self.cargo_num})"
+        return f"{self.name} (type: {self.train_type})"
 
 
 class Station(models.Model):
@@ -64,6 +64,10 @@ class Crew(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
 
+    @property
+    def full_name(self) -> str:
+        return f"{self.first_name} {self.last_name}"
+
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
@@ -79,7 +83,7 @@ class Ticket(models.Model):
     journey = models.ForeignKey(
         "Journey", on_delete=models.CASCADE, related_name="tickets"
     )
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="tickets")
 
     class Meta:
         unique_together = (("cargo", "journey", "seat"),)

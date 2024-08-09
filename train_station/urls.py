@@ -7,6 +7,8 @@ from train_station.views import (
     StationViewSet,
     RouteViewSet,
     CrewViewSet,
+    JourneyViewSet,
+    OrderViewSet,
 )
 
 app_name = "train_station"
@@ -17,6 +19,8 @@ router.register("trains", TrainViewSet)
 router.register("stations", StationViewSet)
 router.register("routes", RouteViewSet)
 router.register("crews", CrewViewSet)
+router.register("journeys", JourneyViewSet)
+router.register("orders", OrderViewSet)
 
 
 urlpatterns = [path("", include(router.urls))]
