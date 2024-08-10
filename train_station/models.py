@@ -126,9 +126,3 @@ class Journey(models.Model):
 
     def __str__(self):
         return f"{self.route} ({self.departure_time} - {self.arrival_time})"
-
-    @property
-    def tickets_available(self):
-        total_seats = self.train.cargo_num * self.train.places_in_cargo
-        booked_seats = self.tickets.count()
-        return total_seats - booked_seats

@@ -35,8 +35,8 @@ class StationSerializer(serializers.ModelSerializer):
 
 
 class RouteSerializer(serializers.ModelSerializer):
-    source = serializers.PrimaryKeyRelatedField(queryset=Station.objects.all())
-    destination = serializers.PrimaryKeyRelatedField(queryset=Station.objects.all())
+    source = serializers.CharField(source="source.name")
+    destination = serializers.CharField(source="destination.name")
 
     class Meta:
         model = Route
@@ -60,6 +60,7 @@ class CrewSerializer(serializers.ModelSerializer):
 
 
 class JourneySerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Journey
         fields = (
@@ -69,7 +70,6 @@ class JourneySerializer(serializers.ModelSerializer):
             "arrival_time",
             "crew",
             "train",
-            "tickets_available",
         )
 
     def validate(self, data):
@@ -86,10 +86,25 @@ class JourneyListSerializer(JourneySerializer):
     )
     train = serializers.SlugRelatedField(many=False, read_only=True, slug_field="name")
     route = serializers.SerializerMethodField()
-    tickets_available = serializers.IntegerField(read_only=True)
+    tickets_available = serializers.IntegerField()
+
+    class Meta:
+        model = Journey
+        fields = (
+            "id",
+            "route",
+            "departure_time",
+            "arrival_time",
+            "crew",
+            "train",
+            "tickets_available",
+        )
 
     def get_route(self, obj):
         return str(obj.route)
+
+    def get_tickets_available(self, obj):
+        return obj.tickets_available
 
 
 class JourneyDetailSerializer(JourneySerializer):
@@ -97,6 +112,18 @@ class JourneyDetailSerializer(JourneySerializer):
     train = TrainSerializer(many=False)
     route = RouteListSerializer(many=False)
     tickets_available = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Journey
+        fields = (
+            "id",
+            "route",
+            "departure_time",
+            "arrival_time",
+            "crew",
+            "train",
+            "tickets_available",
+        )
 
 
 class TicketSummarySerializer(serializers.ModelSerializer):
