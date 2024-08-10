@@ -1,9 +1,8 @@
-import datetime
-
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.utils import timezone
 
 from user.models import CustomUser
 
@@ -111,7 +110,7 @@ class Journey(models.Model):
     route = models.ForeignKey(Route, on_delete=models.CASCADE, related_name="journeys")
     train = models.ForeignKey(Train, on_delete=models.CASCADE, related_name="journeys")
     departure_time = models.DateTimeField(
-        validators=[MinValueValidator(datetime.datetime.now())],
+        validators=[MinValueValidator(timezone.now())],
     )
     arrival_time = models.DateTimeField()
     crew = models.ManyToManyField(Crew, related_name="journeys")
@@ -127,3 +126,9 @@ class Journey(models.Model):
 
     def __str__(self):
         return f"{self.route} ({self.departure_time} - {self.arrival_time})"
+
+    @property
+    def tickets_available(self):
+        total_seats = self.train.cargo_num * self.train.places_in_cargo
+        booked_seats = self.tickets.count()
+        return total_seats - booked_seats

@@ -62,7 +62,22 @@ class CrewSerializer(serializers.ModelSerializer):
 class JourneySerializer(serializers.ModelSerializer):
     class Meta:
         model = Journey
-        fields = ("id", "route", "departure_time", "arrival_time", "crew", "train")
+        fields = (
+            "id",
+            "route",
+            "departure_time",
+            "arrival_time",
+            "crew",
+            "train",
+            "tickets_available",
+        )
+
+    def validate(self, data):
+        if data.get("arrival_time") <= data.get("departure_time"):
+            raise serializers.ValidationError(
+                f"Arrival time must be later than departure time."
+            )
+        return data
 
 
 class JourneyListSerializer(JourneySerializer):
@@ -71,6 +86,7 @@ class JourneyListSerializer(JourneySerializer):
     )
     train = serializers.SlugRelatedField(many=False, read_only=True, slug_field="name")
     route = serializers.SerializerMethodField()
+    tickets_available = serializers.IntegerField(read_only=True)
 
     def get_route(self, obj):
         return str(obj.route)
@@ -80,15 +96,26 @@ class JourneyDetailSerializer(JourneySerializer):
     crew = CrewSerializer(many=True)
     train = TrainSerializer(many=False)
     route = RouteListSerializer(many=False)
+    tickets_available = serializers.IntegerField(read_only=True)
 
 
 class TicketSummarySerializer(serializers.ModelSerializer):
+    route = serializers.SerializerMethodField()
+    train = serializers.SerializerMethodField()
+
     class Meta:
         model = Ticket
-        fields = ("id", "cargo", "seat")
+        fields = ("id", "cargo", "seat", "route", "train")
+
+    def get_route(self, obj):
+        return str(obj.journey.route)
+
+    def get_train(self, obj):
+        return obj.journey.train.name
 
 
 class TicketSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Ticket
         fields = ("id", "cargo", "seat", "journey", "order")
