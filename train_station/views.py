@@ -1,5 +1,8 @@
 from django.db.models import Count, F
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from train_station.models import (
     TrainType,
@@ -25,6 +28,7 @@ from train_station.serializers import (
     OrderCreateSerializer,
     OrderDetailSerializer,
     OrderListSerializer,
+    TrainImageSerializer,
 )
 
 
@@ -49,8 +53,25 @@ class TrainViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "list":
             return TrainListSerializer
-        else:
-            return TrainSerializer
+        if self.action == "upload_image":
+            return TrainImageSerializer
+        return TrainSerializer
+
+    @action(
+        methods=["POST"],
+        detail=True,
+        url_path="upload-image",
+        permission_classes=[IsAuthenticated],
+    )
+    def upload_image(self, request, pk=None):
+        movie = self.get_object()
+        serializer = self.get_serializer(movie, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class StationViewSet(viewsets.ModelViewSet):

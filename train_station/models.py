@@ -1,8 +1,12 @@
+import os
+import uuid
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils import timezone
+from django.utils.text import slugify
 
 from user.models import CustomUser
 
@@ -14,6 +18,14 @@ class TrainType(models.Model):
         return self.name
 
 
+def train_image_file_path(instance, filename):
+    _, extension = os.path.splitext(filename)
+    name = instance.name[:50]
+    filename = f"{slugify(name)}-{uuid.uuid4()}{extension}"
+
+    return os.path.join("uploads/trains/", filename)
+
+
 class Train(models.Model):
     name = models.CharField(max_length=255)
     cargo_num = models.IntegerField()
@@ -21,6 +33,7 @@ class Train(models.Model):
     train_type = models.ForeignKey(
         TrainType, on_delete=models.CASCADE, related_name="trains"
     )
+    image = models.ImageField(null=True, upload_to=train_image_file_path)
 
     def __str__(self):
         return f"{self.name} (type: {self.train_type})"
@@ -48,7 +61,9 @@ class Route(models.Model):
         Station, on_delete=models.CASCADE, related_name="routes_as_source"
     )
     destination = models.ForeignKey(
-        Station, on_delete=models.CASCADE, related_name="routes_as_destination"
+        Station,
+        on_delete=models.CASCADE,
+        related_name="routes_as_destination",
     )
     distance = models.IntegerField()
 
@@ -73,7 +88,9 @@ class Crew(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+    )
 
 
 class Ticket(models.Model):
@@ -82,7 +99,9 @@ class Ticket(models.Model):
     journey = models.ForeignKey(
         "Journey", on_delete=models.CASCADE, related_name="tickets"
     )
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="tickets")
+    order = models.ForeignKey(
+        Order, on_delete=models.CASCADE, related_name="tickets"
+    )
 
     class Meta:
         unique_together = (("cargo", "journey", "seat"),)
@@ -107,8 +126,12 @@ class Ticket(models.Model):
 
 
 class Journey(models.Model):
-    route = models.ForeignKey(Route, on_delete=models.CASCADE, related_name="journeys")
-    train = models.ForeignKey(Train, on_delete=models.CASCADE, related_name="journeys")
+    route = models.ForeignKey(
+        Route, on_delete=models.CASCADE, related_name="journeys"
+    )
+    train = models.ForeignKey(
+        Train, on_delete=models.CASCADE, related_name="journeys"
+    )
     departure_time = models.DateTimeField(
         validators=[MinValueValidator(timezone.now())],
     )
@@ -118,7 +141,9 @@ class Journey(models.Model):
     def clean(self):
         super().clean()
         if self.arrival_time <= self.departure_time:
-            raise ValidationError("Arrival time must be later than departure time.")
+            raise ValidationError(
+                "Arrival time must be later than departure time."
+            )
 
     def save(self, *args, **kwargs):
         self.full_clean()

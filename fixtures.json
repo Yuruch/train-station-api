@@ -41,7 +41,8 @@
       "name": "Intercity Express",
       "cargo_num": 101,
       "places_in_cargo": 200,
-      "train_type": 1
+      "train_type": 1,
+      "image": "uploads/trains/intercity-express-ca843c13-044d-4fbb-b24d-438f2e93f940.jpeg"
     }
   },
   {
@@ -51,7 +52,8 @@
       "name": "Freight Liner",
       "cargo_num": 202,
       "places_in_cargo": 0,
-      "train_type": 2
+      "train_type": 2,
+      "image": "uploads/trains/intercity-express-ca843c13-044d-4fbb-b24d-438f2e93f940.jpeg"
     }
   },
   {
@@ -61,7 +63,8 @@
       "name": "Regional Commuter",
       "cargo_num": 303,
       "places_in_cargo": 100,
-      "train_type": 3
+      "train_type": 3,
+      "image": "uploads/trains/intercity-express-ca843c13-044d-4fbb-b24d-438f2e93f940.jpeg"
     }
   },
   {
@@ -71,7 +74,8 @@
       "name": "City Hopper",
       "cargo_num": 404,
       "places_in_cargo": 150,
-      "train_type": 4
+      "train_type": 4,
+      "image": "uploads/trains/intercity-express-ca843c13-044d-4fbb-b24d-438f2e93f940.jpeg"
     }
   },
   {
@@ -81,7 +85,8 @@
       "name": "High Speed Bullet",
       "cargo_num": 505,
       "places_in_cargo": 300,
-      "train_type": 5
+      "train_type": 5,
+      "image": "uploads/trains/intercity-express-ca843c13-044d-4fbb-b24d-438f2e93f940.jpeg"
     }
   },
   {
@@ -91,7 +96,8 @@
       "name": "Freight Master",
       "cargo_num": 606,
       "places_in_cargo": 0,
-      "train_type": 2
+      "train_type": 2,
+      "image": "uploads/trains/intercity-express-ca843c13-044d-4fbb-b24d-438f2e93f940.jpeg"
     }
   },
   {
@@ -101,7 +107,8 @@
       "name": "Express Liner",
       "cargo_num": 707,
       "places_in_cargo": 250,
-      "train_type": 1
+      "train_type": 1,
+      "image": "uploads/trains/intercity-express-ca843c13-044d-4fbb-b24d-438f2e93f940.jpeg"
     }
   },
   {
@@ -111,7 +118,8 @@
       "name": "City Express",
       "cargo_num": 808,
       "places_in_cargo": 120,
-      "train_type": 4
+      "train_type": 4,
+      "image": "uploads/trains/intercity-express-ca843c13-044d-4fbb-b24d-438f2e93f940.jpeg"
     }
   },
   {
@@ -121,7 +129,8 @@
       "name": "Regional Express",
       "cargo_num": 909,
       "places_in_cargo": 110,
-      "train_type": 3
+      "train_type": 3,
+      "image": "uploads/trains/intercity-express-ca843c13-044d-4fbb-b24d-438f2e93f940.jpeg"
     }
   },
   {
@@ -131,7 +140,8 @@
       "name": "Bullet Liner",
       "cargo_num": 1010,
       "places_in_cargo": 350,
-      "train_type": 5
+      "train_type": 5,
+      "image": "uploads/trains/intercity-express-ca843c13-044d-4fbb-b24d-438f2e93f940.jpeg"
     }
   },
   {
@@ -788,7 +798,6 @@
     "model": "user.customuser",
     "pk": 2,
     "fields": {
-      "username": "john_doe",
       "password": "pbkdf2_sha256$260000$5cPwq1JCLPty$z/vW3GgKhkU/JwTfsRJn/mjB9Zb6iRHE9c8Bs9Se/WE=",
       "email": "john_doe@example.com"
     }
@@ -797,7 +806,6 @@
     "model": "user.customuser",
     "pk": 3,
     "fields": {
-      "username": "jane_smith",
       "password": "pbkdf2_sha256$260000$T2y1tddr4G26$hVClMYOZL8NqCJ5I1fjfkwy/TPm/v1Xbr17BfrZQnxQ=",
       "email": "jane_smith@example.com"
     }
