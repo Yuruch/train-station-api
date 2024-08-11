@@ -25,7 +25,10 @@ class TrainTestCase(TestCase):
     def test_str_method(self):
         train_type = TrainType.objects.create(name="Freight")
         train = Train.objects.create(
-            name="Train A", cargo_num=100, places_in_cargo=50, train_type=train_type
+            name="Train A",
+            cargo_num=100,
+            places_in_cargo=50,
+            train_type=train_type,
         )
         self.assertEqual(str(train), "Train A (type: Freight)")
 
@@ -61,7 +64,7 @@ class RouteTestCase(TestCase):
             route = Route(
                 source=self.source, destination=self.destination, distance=150
             )
-            route.full_clean()  # Should raise a ValidationError due to the unique constraint
+            route.full_clean()
 
 
 class CrewTestCase(TestCase):
@@ -115,7 +118,9 @@ class TicketTestCase(TestCase):
         )  # Adjust as needed if not used
 
     def test_clean_method(self):
-        ticket = Ticket(cargo=50, seat=30, journey=self.journey, order=self.order)
+        ticket = Ticket(
+            cargo=50, seat=30, journey=self.journey, order=self.order
+        )
         ticket.clean()  # Should pass without raising ValidationError
 
     def test_clean_method_invalid_seat(self):
@@ -142,7 +147,9 @@ class TicketTestCase(TestCase):
         ticket = Ticket.objects.create(
             cargo=10, seat=20, journey=self.journey, order=self.order
         )
-        self.assertEqual(str(ticket), f"{self.journey} (train - 10, seat - 20)")
+        self.assertEqual(
+            str(ticket), f"{self.journey} (train - 10, seat - 20)"
+        )
 
 
 class JourneyTestCase(TestCase):
@@ -192,5 +199,6 @@ class JourneyTestCase(TestCase):
         )
         self.assertEqual(
             str(journey),
-            f"{self.route} ({journey.departure_time} - {journey.arrival_time})",
+            f"{self.route} ({journey.departure_time}"
+            f" - {journey.arrival_time})",
         )

@@ -96,7 +96,7 @@ class JourneySerializer(serializers.ModelSerializer):
     def validate(self, data):
         if data.get("arrival_time") <= data.get("departure_time"):
             raise serializers.ValidationError(
-                f"Arrival time must be later than departure time."
+                "Arrival time must be later than departure time."
             )
         return data
 
@@ -185,7 +185,8 @@ class TicketSerializer(serializers.ModelSerializer):
         if journey:
             if not (1 <= data.get("seat") <= journey.train.places_in_cargo):
                 raise serializers.ValidationError(
-                    f"Seat must be between 1 and {journey.train.places_in_cargo}."
+                    f"Seat must be between 1 and "
+                    f"{journey.train.places_in_cargo}."
                 )
             if not (1 <= data.get("cargo") <= journey.train.cargo_num):
                 raise serializers.ValidationError(

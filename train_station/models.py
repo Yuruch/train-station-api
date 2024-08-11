@@ -8,8 +8,6 @@ from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
 
-from user.models import CustomUser
-
 
 class TrainType(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -110,7 +108,8 @@ class Ticket(models.Model):
         super().clean()
         if not (1 <= self.seat <= self.journey.train.places_in_cargo):
             raise ValidationError(
-                f"Seat must be between 1 and {self.journey.train.places_in_cargo}."
+                f"Seat must be between 1 and "
+                f"{self.journey.train.places_in_cargo}."
             )
         if not (1 <= self.cargo <= self.journey.train.cargo_num):
             raise ValidationError(

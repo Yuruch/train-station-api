@@ -42,7 +42,10 @@ class TrainViewSetTests(APITestCase):
     def setUp(self):
         self.train_type = TrainType.objects.create(name="Freight")
         self.train = Train.objects.create(
-            name="Train1", cargo_num=10, places_in_cargo=100, train_type=self.train_type
+            name="Train1",
+            cargo_num=10,
+            places_in_cargo=100,
+            train_type=self.train_type,
         )
         self.url = reverse("train_station:train-list")
 
@@ -130,7 +133,10 @@ class JourneyViewSetTests(APITestCase):
         )
         self.train_type = TrainType.objects.create(name="Passenger")
         self.train = Train.objects.create(
-            name="Train1", cargo_num=5, places_in_cargo=50, train_type=self.train_type
+            name="Train1",
+            cargo_num=5,
+            places_in_cargo=50,
+            train_type=self.train_type,
         )
         self.crew = Crew.objects.create(first_name="John", last_name="Doe")
         self.journey = Journey.objects.create(
