@@ -128,11 +128,11 @@ class JourneySerializerTest(TestCase):
     def test_journey_serializer(self):
         serializer = JourneySerializer(instance=self.journey)
         data = serializer.data
-        self.assertEqual(data["route"], 1)
-        self.assertEqual(data["train"], 1)
+        self.assertEqual(data["route"], 10)
+        self.assertEqual(data["train"], 9)
         self.assertEqual(data["departure_time"], "2024-08-15T08:00:00Z")
         self.assertEqual(data["arrival_time"], "2024-08-15T12:00:00Z")
-        self.assertEqual(data["crew"][0], 1)
+        self.assertEqual(data["crew"][0], 7)
 
 
 class TicketSerializerTest(TestCase):
