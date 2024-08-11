@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 
 from train_station.models import (
@@ -35,12 +36,18 @@ class StationSerializer(serializers.ModelSerializer):
 
 
 class RouteSerializer(serializers.ModelSerializer):
-    source = serializers.CharField(source="source.name")
-    destination = serializers.CharField(source="destination.name")
 
     class Meta:
         model = Route
         fields = ("id", "source", "destination", "distance")
+
+    def create(self, validated_data):
+        source = validated_data.pop("source")
+        destination = validated_data.pop("destination")
+        route = Route.objects.create(
+            source=source, destination=destination, **validated_data
+        )
+        return route
 
 
 class RouteListSerializer(RouteSerializer):
@@ -145,7 +152,7 @@ class TicketSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ticket
-        fields = ("id", "cargo", "seat", "journey", "order")
+        fields = ("id", "cargo", "seat", "journey")
 
     def validate(self, data):
         journey = data.get("journey")
@@ -189,10 +196,10 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         fields = ("id", "created_at", "tickets")
 
     def create(self, validated_data):
-        tickets_data = validated_data.pop("tickets")
-        order = Order.objects.create(
-            user=self.context["request"].user, **validated_data
-        )
-        for ticket_data in tickets_data:
-            Ticket.objects.create(order=order, **ticket_data)
-        return order
+        with transaction.atomic():
+            tickets_data = validated_data.pop("tickets")
+            order = Order.objects.create(**validated_data)
+            for ticket_data in tickets_data:
+                Ticket.objects.create(order=order, **ticket_data)
+
+            return order
