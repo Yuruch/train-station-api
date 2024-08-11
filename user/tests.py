@@ -4,8 +4,6 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from user.serializers import UserSerializer
-
 
 class UserCreationTests(APITestCase):
     def test_create_user(self):
